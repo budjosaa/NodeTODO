@@ -31,14 +31,14 @@ router.post("/login", (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then(user => {
       if (user === null) {
-        next(new Error("User not found!"));
+        throw new Error("User not found!");
       }
       const compPass = bcrypt.compareSync(req.body.password, user.password);
       if (compPass) {
         const token = getJWT(user, process.env.JWT_SECRET);
         res.json({ user, token });
       } else {
-        res.json("Wrong password");
+        res.json({ message: "Wrong password!" });
       }
     })
     .catch(err => {
