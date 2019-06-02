@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var User = require("./models/userModel");
+var User = require("../models/userModel");
 const verifyToken = require("../middlewares/JWTVerify");
 
 /* GET users listing. */
