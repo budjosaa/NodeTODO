@@ -6,36 +6,36 @@ getJWT = user => {
   return jwt.sign({ user: user }, process.env.JWT_SECRET);
 };
 module.exports = {
-  registerUser: async (req, res, next) => {
-    const hashPass = bcrypt.hashSync(req.body.password, 10);
+  registerUser: async data => {
+    const hashPass = bcrypt.hashSync(data.password, 10);
     const user = new User({
-      username: req.body.username,
+      username: data.username,
       password: hashPass,
-      email: req.body.email
+      email: data.email
     });
     try {
       const savedUser = await user.save();
       const token = getJWT(savedUser);
-      res.json({ savedUser, token });
+      return { user: savedUser, token };
     } catch (err) {
-      next(err);
+      throw err;
     }
   },
-  loginUser: async (req, res, next) => {
+  loginUser: async data => {
     try {
-      const user = await User.findOne({ email: req.body.email });
+      const user = await User.findOne({ email: data.email });
       if (user === null) {
         throw new Error("User not found!");
       }
-      const compPass = bcrypt.compareSync(req.body.password, user.password);
+      const compPass = bcrypt.compareSync(data.password, user.password);
       if (compPass) {
         const token = getJWT(user);
-        res.json({ user, token });
+        return { user, token };
       } else {
-        res.json({ message: "Wrong password!" });
+        return { message: "Wrong password!" };
       }
     } catch (err) {
-      next(err);
+      throw err;
     }
   }
 };
