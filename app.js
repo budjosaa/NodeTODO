@@ -5,7 +5,9 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const db = require("./src/db");
 const errorHandler = require("./src/middlewares/ErrorHandler");
+const dotenv = require("dotenv");
 
+dotenv.config();
 db.connect();
 
 var indexRouter = require("./src/routes/index");
@@ -20,9 +22,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
-app.use("/todos", todosRouter);
-app.use("/auth", authRouter);
+router = express.Router();
+app.use("/api", router);
+
+router.use("/todos", todosRouter);
+router.use("/auth", authRouter);
 
 app.use(errorHandler.handleError);
 
