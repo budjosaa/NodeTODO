@@ -10,8 +10,7 @@ verifyToken = (req, res, next) => {
     req.user = user;
     next();
   } catch (err) {
-    unError = new Unauthorized("Unauthorized");
-    next(unError);
+    throw new Unauthorized("Unauthorized");
   }
 };
 module.exports = verifyToken;

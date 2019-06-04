@@ -33,8 +33,7 @@ module.exports = {
       const result = await joi.validate(req.body, schema);
       return next();
     } catch (err) {
-      // eror = new InvaliDataError("Invalid Data");
-      next(err);
+      throw err;
     }
   }
 };
