@@ -12,7 +12,7 @@ router.post(
       password: req.body.password
     })
       .then(data => res.send(data))
-      .catch(err => next(err))
+      .catch(next)
 );
 
 router.post("/login", validateService.validateLoginForm, (req, res, next) =>
@@ -21,7 +21,7 @@ router.post("/login", validateService.validateLoginForm, (req, res, next) =>
     password: req.body.password
   })
     .then(data => res.send(data))
-    .catch(err => next(err))
+    .catch(next)
 );
 
 module.exports = router;

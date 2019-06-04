@@ -1,4 +1,5 @@
 const joi = require("@hapi/joi");
+const InvaliDataError = require("../errors/InvalidData");
 module.exports = {
   validateRegistrationForm: async (req, res, next) => {
     const schema = joi.object().keys({
@@ -16,7 +17,8 @@ module.exports = {
       const result = await joi.validate(req.body, schema);
       return next();
     } catch (err) {
-      res.json({ message: "Invalid data!" });
+      eror = new InvaliDataError("Invalid Data");
+      next(eror);
     }
   },
   validateLoginForm: async (req, res, next) => {
@@ -31,7 +33,8 @@ module.exports = {
       const result = await joi.validate(req.body, schema);
       return next();
     } catch (err) {
-      res.json({ message: "invalid data" });
+      // eror = new InvaliDataError("Invalid Data");
+      next(err);
     }
   }
 };

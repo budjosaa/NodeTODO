@@ -2,18 +2,16 @@ const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const env = require("dotenv").config();
+const InvalidDataError = require("../errors/InvalidData");
+
 getJWT = user => {
   return jwt.sign({ user: user }, process.env.JWT_SECRET);
 };
+
 module.exports = {
   registerUser: async data => {
-    const hashPass = bcrypt.hashSync(data.password, 10);
-    const user = new User({
-      username: data.username,
-      password: hashPass,
-      email: data.email
-    });
     try {
+      const user = new User({ ...data });
       const savedUser = await user.save();
       const token = getJWT(savedUser);
       return { user: savedUser, token };
@@ -24,15 +22,16 @@ module.exports = {
   loginUser: async data => {
     try {
       const user = await User.findOne({ email: data.email });
+
       if (user === null) {
-        throw new Error("User not found!");
+        throw new InvalidDataError("User not found");
       }
-      const compPass = bcrypt.compareSync(data.password, user.password);
-      if (compPass) {
+
+      if (user.comparePassword(data.password)) {
         const token = getJWT(user);
         return { user, token };
       } else {
-        return { message: "Wrong password!" };
+        throw new InvalidDataError("Wrong password!");
       }
     } catch (err) {
       throw err;
