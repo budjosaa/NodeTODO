@@ -6,15 +6,16 @@ var logger = require("morgan");
 const db = require("./src/db");
 const errorHandler = require("./src/middlewares/ErrorHandler");
 const dotenv = require("dotenv");
+const cors = require("cors");
 
 dotenv.config();
 db.connect();
 
-var indexRouter = require("./src/routes/index");
 var todosRouter = require("./src/routes/todos.router");
 var authRouter = require("./src/routes/auth.router");
 
 var app = express();
+app.use(cors());
 
 app.use(logger("dev"));
 app.use(express.json());
